@@ -28,7 +28,11 @@ impl fmt::Display for List {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             List::Sym(sym) => {
-                write!(f, "{}", sym)?;
+                if sym.starts_with("'") {
+                    write!(f, "(fsc-reserved-single-quote {})", &sym[1..])?;
+                } else {
+                    write!(f, "{}", sym)?;
+                }
             },
             List::List(list) => { match &list[..] {
                     [List::Sym(y), List::Sym(x)] if y == "fsc-reserved-double-quote" => {
@@ -62,8 +66,7 @@ fn infer_parens(input_path: &str) -> String {
             .with_brackets('{', '}', Some("fsc-reserved-curly-bracket".into()))
             .with_comments('#')
             .with_separator(';')
-            .with_symbol_character(',')
-            .allow_multi_indent(true);
+            .with_symbol_character(',');
 
     let content = fs::read_to_string(input_path).unwrap();
     let mut parsed: Vec<List> = parser.parse(content.chars()).unwrap().parse_rest(&()).unwrap();

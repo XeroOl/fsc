@@ -58,7 +58,7 @@
         (for [i (- (length a) 1) 2 -1]
             ;; TODO keep going back until a different op is encountered
             (when (in? ops (. a i))
-                (wrap a (+ i 1) (length a))
+                (wrap a (+ i 1))
                 (wrap a 1 (- i 1))
                 (table.insert a 1 (table.remove a 2))
                 (lua "return true"))))
@@ -130,10 +130,14 @@
                             ; [a] = b
                             (where [key true ?val]
                                 (and (list? key)
-                                     (= (. key 1) (sym :square-list))))
+                                     (= (. key 1) (sym :fsc-reserved-square-bracket))))
                             (do
-                                (tset b (delistify (. key 2)) (delistify ?val))
+                                (wrap key 2)
+                                (tset b
+                                      (delistify (. key 2))
+                                      (delistify ?val))
                                 (set i (+ 3 i)))
+
                             _   (error "bad table literal" a)))
                     (set a b)))
 
@@ -323,8 +327,8 @@
                         ; (foo @ 2 @ 3) = 10 ==> tset (foo @ 2) 3 10
                         ; (@ foo 2 3) = 10 ==> tset (@ foo 2) 3 10
                         (if (and (list? (. a 2))
-                                 (not (= (. a 2 1) (sym :curly-list)))
-                                 (not (= (. a 2 1) (sym :square-list))))
+                                 (not (= (. a 2 1) (sym :fsc-reserved-curly-bracket)))
+                                 (not (= (. a 2 1) (sym :fsc-reserved-square-bracket))))
                             ; tset variation
                             (do (var expr (. a 2))
                                 (local x (table.remove expr))
@@ -360,13 +364,11 @@
                     (inline-op! a "^") nil
                     (inline-op! a ".") nil
                     ; 'foo bar a b c -> : bar :foo a b c
-                    (and (list? (. a 1)) (= (. a 1 1) (sym :sugar-quote)))
+                    (and (list? (. a 1)) (= (. a 1 1) (sym :fsc-reserved-single-quote)))
                     (do
                         (local method (tostring (table.remove (. a 1))))
                         (tset a 1 (sym ":"))
                         (table.insert a 3 method))))
-                    
-                
             (when RECURSE
                 (each [k v (ipairs a)]
                     (tset a k (delistify v)))))
