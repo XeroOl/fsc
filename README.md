@@ -2,7 +2,6 @@
 A custom """programming language""" that compiles to Lua. It is based on the programming language Fennel.
 Requires linux or mac, and needs fennel on the path.
 
-```
 Install:
 ```sh
 git clone git@github.com:XeroOl/fsc.git
