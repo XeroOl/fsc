@@ -1,5 +1,6 @@
 # fsc
-A custom """programming language""" that compiles to Lua. It is based on the programming language Fennel.
+A custom """programming language""" that compiles to Lua.
+The syntax is stolen from the programming language "scopes", and the semantics are stolen from the programming language "fennel". I basically just wrote the glue code to badly chain it together. I don't recommend using this programming language for anything unless you're willing to audit the generated source code yourself.
 Requires linux or mac, and needs fennel on the path.
 
 Install:
